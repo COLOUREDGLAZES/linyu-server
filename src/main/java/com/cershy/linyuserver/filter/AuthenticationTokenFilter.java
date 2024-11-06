@@ -56,6 +56,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 } catch (Exception e) {
                 }
             }
+            httpServletRequest.setAttribute("userinfo", map);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
