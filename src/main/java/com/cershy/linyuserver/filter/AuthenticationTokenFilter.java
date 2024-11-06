@@ -46,7 +46,6 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 claims = JwtUtil.parseToken(token);
             } catch (Exception e) {
                 tokenInvalid(httpServletResponse);
-                logger.error(e.getMessage());
                 return;
             }
             // 设置用户信息
