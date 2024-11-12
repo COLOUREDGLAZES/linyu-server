@@ -24,11 +24,12 @@ spring:
     host: localhost
     port: 6379
   mail:
-    host: smtp.163.com
+    #    host: smtp.163.com
+    host: smtp.qq.com
     protocol: smtp
     default-encoding: UTF-8
-    username: xxxx@163.com
-    password: xxxxxx
+    username: 506031313@qq.com
+    password: bkxbzydtclaybjab
     test-connection: true
     properties:
       mail:
@@ -44,7 +45,7 @@ mybatis-plus:
 
 voice:
   model: "/model/faster-whisper-small/"
-  transitionApi: "http://123.207.210.163:8000/v1/audio/transcriptions"
+  transitionApi: "http://127.0.0.1:8000/v1/audio/transcriptions"
 
 rocketmq:
   enabled: false
@@ -59,5 +60,5 @@ minio:
   endpoint: http://127.0.0.1:9000
   bucketName: linyu
   fileBucketName: file
-  accessKey: xxx
-  secretKey: xxx
+  accessKey: nJ7iYVdOBq6d08gLRHjD
+  secretKey: e46lzUWb3CD1qerWawUSuqLwcMEI656AEO6MLPGq
