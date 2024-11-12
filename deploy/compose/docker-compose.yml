@@ -49,7 +49,7 @@ services:
     image: apache/rocketmq:5.3.0
     container_name: rmqnamesrv
     ports:
-      - "9876:9876"
+      - 9876:9876
     networks:
       - rocketmq
     command: sh mqnamesrv
@@ -59,24 +59,22 @@ services:
     image: apache/rocketmq:5.3.0
     container_name: rmqbroker
     ports:
-      - "10909:10909"
-      - "10911:10911"
-      - "10912:10912"
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
     environment:
       - NAMESRV_ADDR=rmqnamesrv:9876
       - JAVA_OPT_EXT=-server -Xms128m -Xmx128m
     depends_on:
       - namesrv
     volumes:
-#      - ./broker.conf:/home/rocketmq/broker.conf
-      - /home/broker.conf:/home/rocketmq/broker.conf
+      - ./broker.conf:/home/rocketmq/broker.conf
     networks:
       - rocketmq
     command: sh mqbroker -c /home/rocketmq/broker.conf
 
   linyu:
-#    image: sha256:27fa16e6cfc3
-    build: ../../Dockerfile
+    image: henam/linyu:latest
     container_name: linyu
     depends_on:
       - mysql
