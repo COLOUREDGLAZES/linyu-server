@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/linyu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.101.4:3306/linyu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     hikari:
@@ -45,11 +45,11 @@ mybatis-plus:
 
 voice:
   model: "/model/faster-whisper-small/"
-  transitionApi: "http://127.0.0.1:8000/v1/audio/transcriptions"
+  transitionApi: "http://192.168.101.4:8000/v1/audio/transcriptions"
 
 rocketmq:
   enabled: false
-  name-server: 127.0.0.1:9876
+  name-server: 192.168.101.4:9876
   producer:
     group: linyu_group
     send-message-timeout: 5000
@@ -57,7 +57,7 @@ rocketmq:
     retry-times-when-send-async-failed: 3
 
 minio:
-  endpoint: http://127.0.0.1:9000
+  endpoint: http://192.168.101.4:9000
   bucketName: linyu
   fileBucketName: file
   accessKey: nJ7iYVdOBq6d08gLRHjD
