@@ -167,13 +167,12 @@ public class UserController {
         return ResultUtil.Succeed(url);
     }
 
-    @PostMapping(value = "/upload/mobile/portrait")
-    public JSONObject uploadFromMobile(HttpServletRequest request,
-                             @Userid String userId,
-                             @RequestParam("name") String name,
-                             @RequestParam("type") String type,
-                             @RequestParam("size") long size,
-                             @RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(value = "upload/portrait/form")
+    public JSONObject uploadFrom(@Userid String userId,
+                                       @RequestParam("name") String name,
+                                       @RequestParam("type") String type,
+                                       @RequestParam("size") long size,
+                                       @RequestParam("file") MultipartFile file) throws IOException {
 
 
         String fileName = userId + "-portrait" + name.substring(name.lastIndexOf("."));
