@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -138,7 +139,7 @@ public class UserController {
     }
 
     /**
-     *修改密码
+     * 修改密码
      *
      * @return
      */
@@ -150,8 +151,7 @@ public class UserController {
         if (SecurityUtil.verifyPassword(updateVo.getOldPassword(), user.getPassword())) {
             boolean result = userService.updateUserInfo(userId, updateVo);
             return ResultUtil.ResultByFlag(result);
-        }
-        else return ResultUtil.ResultByFlag(false,"原密码错误~",400);
+        } else return ResultUtil.ResultByFlag(false, "原密码错误~", 400);
     }
 
     @PostMapping(value = "/upload/portrait")
@@ -162,6 +162,22 @@ public class UserController {
                              @RequestHeader("size") long size) throws IOException {
         String fileName = userId + "-portrait" + name.substring(name.lastIndexOf("."));
         String url = minioUtil.upload(request.getInputStream(), fileName, type, size);
+        url += "?t=" + System.currentTimeMillis();
+        userService.updateUserPortrait(userId, url);
+        return ResultUtil.Succeed(url);
+    }
+
+    @PostMapping(value = "/upload/mobile/portrait")
+    public JSONObject uploadFromMobile(HttpServletRequest request,
+                             @Userid String userId,
+                             @RequestParam("name") String name,
+                             @RequestParam("type") String type,
+                             @RequestParam("size") long size,
+                             @RequestParam("file") MultipartFile file) throws IOException {
+
+
+        String fileName = userId + "-portrait" + name.substring(name.lastIndexOf("."));
+        String url = minioUtil.upload(file.getInputStream(), fileName, type, size);
         url += "?t=" + System.currentTimeMillis();
         userService.updateUserPortrait(userId, url);
         return ResultUtil.Succeed(url);
@@ -208,7 +224,7 @@ public class UserController {
         String url = (String) redisUtils.get(name);
         if (StringUtils.isBlank(url)) {
             url = minioUtil.previewFile(name);
-            redisUtils.set(name, url, 7 * 24 * 60);
+            redisUtils.set(name, url, 7 * 24 * 60 * 60);
         }
         return ResultUtil.Succeed(url);
     }
