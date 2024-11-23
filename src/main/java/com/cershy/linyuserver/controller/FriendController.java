@@ -102,6 +102,17 @@ public class FriendController {
         return ResultUtil.Succeed(result);
     }
 
+    /**
+     * 拒绝好友请求
+     *
+     * @return
+     */
+    @PostMapping("/reject")
+    public JSONObject refuseFriendApply(@Userid String userId, @RequestBody AgreeFriendApplyVo agreeFriendApplyVo) {
+        boolean result = friendService.rejectFriendApply(userId, agreeFriendApplyVo.getNotifyId());
+        return ResultUtil.Succeed(result);
+    }
+
 
     /**
      * 扫码好友请求
