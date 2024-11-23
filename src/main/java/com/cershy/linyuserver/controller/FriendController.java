@@ -102,6 +102,20 @@ public class FriendController {
         return ResultUtil.Succeed(result);
     }
 
+
+    /**
+     * 扫码好友请求
+     *
+     * @return
+     */
+    @PostMapping("/add/qr")
+    public JSONObject addFriendByQr(@Userid String userId, @RequestBody AddFriendByQrVo AddFriendByQrVo) {
+        String targetId = SecurityUtil.aesDecrypt(AddFriendByQrVo.getQrCode());
+        boolean result = friendService.addFriendApply(userId, targetId);
+        return ResultUtil.Succeed(result);
+    }
+
+
     /**
      * 拒绝好友请求
      *

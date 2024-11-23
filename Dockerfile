@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
 
 WORKDIR /app
-COPY ./*.jar /app/app.jar
+COPY ./target/*.jar /app/app.jar
 
 EXPOSE 9100
 EXPOSE 9200
