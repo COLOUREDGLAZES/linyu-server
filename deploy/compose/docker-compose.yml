@@ -68,8 +68,8 @@ services:
     depends_on:
       - namesrv
     volumes:
-#      - ./broker.conf:/home/rocketmq/broker.conf
-      - /home/broker.conf:/home/rocketmq/broker.conf
+      - ./broker.conf:/home/rocketmq/broker.conf
+#      - /home/broker.conf:/home/rocketmq/broker.conf
     networks:
       - rocketmq
     command: sh mqbroker -c /home/rocketmq/broker.conf
