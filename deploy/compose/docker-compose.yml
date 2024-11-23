@@ -68,14 +68,14 @@ services:
     depends_on:
       - namesrv
     volumes:
-      #      - ./broker.conf:/home/rocketmq/broker.conf
-      - /home/broker.conf:/home/rocketmq/broker.conf
+      - ./broker.conf:/home/rocketmq/broker.conf
+#      - /home/broker.conf:/home/rocketmq/broker.conf
     networks:
       - rocketmq
     command: sh mqbroker -c /home/rocketmq/broker.conf
 
   linyu:
-    #    image: sha256:27fa16e6cfc3
+#    image: sha256:27fa16e6cfc3
     build: ../../Dockerfile
     container_name: linyu
     depends_on:
