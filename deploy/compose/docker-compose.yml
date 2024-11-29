@@ -42,8 +42,9 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - /linyu/minio:/data
+      - D:/other/minio/data:/data
     command: server /data --console-address ":9001"
+    restart: always
 
   namesrv:
     image: apache/rocketmq:5.3.0

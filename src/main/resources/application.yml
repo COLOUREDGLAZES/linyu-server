@@ -58,7 +58,8 @@ rocketmq:
 
 minio:
   endpoint: http://192.168.101.4:9000
+#  endpoint: http://114.96.70.115:9000
   bucketName: linyu
   fileBucketName: file
-  accessKey: nJ7iYVdOBq6d08gLRHjD
-  secretKey: e46lzUWb3CD1qerWawUSuqLwcMEI656AEO6MLPGq
+  accessKey: root
+  secretKey: Sun55@kong

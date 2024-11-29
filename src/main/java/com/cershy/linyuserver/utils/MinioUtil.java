@@ -33,10 +33,8 @@ public class MinioUtil {
 
     /**
      * 创建存储bucket
-     *
-     * @return Boolean
      */
-    public Boolean init() {
+    public void init() {
         try {
             if (!bucketExists(minioConfig.getBucketName())) {
                 makeBucket(minioConfig.getBucketName());
@@ -47,9 +45,7 @@ public class MinioUtil {
             setBucketPolicy(minioConfig.getBucketName());
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     /**
@@ -58,8 +54,11 @@ public class MinioUtil {
      * @return boolean
      */
     public Boolean bucketExists(String bucketName) {
-        Boolean found;
+        boolean found;
         try {
+
+            System.out.println("Checking if bucket " + bucketName + " exists");
+
             found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         } catch (Exception e) {
             e.printStackTrace();
