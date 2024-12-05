@@ -72,7 +72,7 @@ public class UserController {
      */
     @GetMapping("/unread")
     public JSONObject unreadInfo(@Userid String userId) {
-        HashMap result = userService.unreadInfo(userId);
+        HashMap<String, Integer> result = userService.unreadInfo(userId);
         return ResultUtil.Succeed(result);
     }
 
