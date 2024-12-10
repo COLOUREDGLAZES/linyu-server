@@ -58,6 +58,8 @@ rocketmq:
 
 minio:
   endpoint: http://192.168.101.4:9000
+#  内网穿透
+#  endpoint: http://114.96.70.115:19000
 #  endpoint: http://114.96.70.115:9000
   bucketName: linyu
   fileBucketName: file

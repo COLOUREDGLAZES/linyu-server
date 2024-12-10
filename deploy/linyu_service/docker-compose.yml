@@ -25,6 +25,7 @@ services:
     volumes:
       - /linyu/redis:/data
     restart: always
+
   whisper:
     image: fedirz/faster-whisper-server:latest-cpu
     container_name: whisper
@@ -82,7 +83,7 @@ services:
     restart: always
 
   linyu:
-    image: sha256:89e7d65ccfd3
+    image: linyu:latest
 #    build: ../../Dockerfile
     container_name: linyu
     depends_on:
