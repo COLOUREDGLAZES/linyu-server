@@ -4,7 +4,7 @@ networks:
     driver: bridge
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -14,6 +14,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
+#      - D:/other/mysql:/var/lib/mysql
       - /linyu/mysql:/var/lib/mysql
     restart: always
 
@@ -23,6 +24,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
+#      - D:/other/redis:/data
       - /linyu/redis:/data
     restart: always
 
@@ -32,6 +34,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
+#      - D:/other/whisper:/model
       - /linyu/whisper/model:/model
     restart: always
 
