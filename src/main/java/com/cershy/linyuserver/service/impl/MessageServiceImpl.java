@@ -234,10 +234,17 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public Message retractionMsg(String userId, RetractionMsgVo retractionMsgVo) {
+
         Message message = getById(retractionMsgVo.getMsgId());
         if (null == message)
             throw new LinyuException("消息不存在");
         MsgContent msgContent = message.getMsgContent();
+        if (MsgSource.User.equals(message.getSource())) {
+            FriendDetailsDto friendDetails = friendService.getFriendDetails(message.getToId(), userId);
+            msgContent.setFormUserName(StringUtils.isNotBlank(friendDetails.getRemark())
+                    ? friendDetails.getRemark() : friendDetails.getName());
+        }
+
         msgContent.setExt(msgContent.getType());
         //只有文本才保存，之前的消息内容
         if (MessageContentType.Text.equals(msgContent.getType())) {
@@ -255,11 +262,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         userIdchatList.setLastMsgContent(msgContent);
         chatListService.updateById(userIdchatList);
         ChatList toIdchatList;
-        if (MsgSource.User.equals(message.getSource())) {
+        if (MsgSource.User.equals(message.getSource()))
             toIdchatList = chatListService.getChatListByUserIdAndFromId(message.getToId(), userId);
-        } else {
+         else
             toIdchatList = chatListService.getChatListByUserIdAndFromId(message.getFromId(), message.getToId());
-        }
+
         toIdchatList.setLastMsgContent(msgContent);
         chatListService.updateById(toIdchatList);
         if (message.getSource().equals(MsgSource.User))
