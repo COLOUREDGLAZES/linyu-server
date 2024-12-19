@@ -36,21 +36,19 @@ public class MQProducerService {
     /**
      * 发送同步消息
      */
-    public SendResult sendMsgToUser(Message msgBody) {
+    public void sendMsgToUser(Message msgBody) {
         if (!enabled)
-            return null;
-        SendResult sendResult = rocketMQTemplate.syncSend(topic + ":user", MessageBuilder.withPayload(msgBody).build());
-        return sendResult;
+            return;
+        rocketMQTemplate.syncSend(topic + ":user", MessageBuilder.withPayload(msgBody).build());
     }
 
     /**
      * 发送同步消息(群)
      */
-    public SendResult sendMsgToGroup(Message msgBody) {
+    public void sendMsgToGroup(Message msgBody) {
         if (!enabled)
-            return null;
+            return;
         SendResult sendResult = rocketMQTemplate.syncSend(topic + ":group", MessageBuilder.withPayload(msgBody).build());
-        return sendResult;
     }
 
     /**
