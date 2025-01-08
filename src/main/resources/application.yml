@@ -63,8 +63,8 @@ rocketmq:
 
 minio:
   #  内网穿透
-  endpoint: http://114.96.70.115:19000
-#  endpoint: http://192.168.101.4:9000
+#  endpoint: http://114.96.70.115:19000
+  endpoint: http://192.168.101.4:9000
 #  endpoint: http://114.96.70.115:9000
   # 阿里云
 #  endpoint: http://47.99.61.62:9000
