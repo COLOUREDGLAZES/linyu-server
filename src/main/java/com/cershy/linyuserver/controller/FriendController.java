@@ -13,6 +13,7 @@ import com.cershy.linyuserver.vo.friend.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -101,6 +102,28 @@ public class FriendController {
         return ResultUtil.Succeed(result);
     }
 
+    /**
+     * 同意好友请求
+     *
+     * @return
+     */
+    @PostMapping("/agree/id")
+    public JSONObject agreeFriendApplyFromId(@Userid String userId, @RequestBody AgreeFriendApplyVo agreeFriendApplyVo) {
+        boolean result = friendService.agreeFriendApply(userId, agreeFriendApplyVo.getFromId());
+        return ResultUtil.Succeed(result);
+    }
+
+    /**
+     * 拒绝好友请求
+     *
+     * @return
+     */
+    @PostMapping("/reject")
+    public JSONObject refuseFriendApply(@Userid String userId, @RequestBody RejectFriendApplyVo friendApplyVo) {
+        boolean result = friendService.rejectFriendApply(userId, friendApplyVo.getFromId());
+        return ResultUtil.Succeed(result);
+    }
+
 
     /**
      * 扫码好友请求
@@ -113,7 +136,6 @@ public class FriendController {
         boolean result = friendService.addFriendApply(userId, targetId);
         return ResultUtil.Succeed(result);
     }
-
 
     /**
      * 设置好友备注

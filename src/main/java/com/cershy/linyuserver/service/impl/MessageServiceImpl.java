@@ -30,7 +30,7 @@ import com.cershy.linyuserver.vo.message.MessageRecordVo;
 import com.cershy.linyuserver.vo.message.ReeditMsgVo;
 import com.cershy.linyuserver.vo.message.RetractionMsgVo;
 import com.cershy.linyuserver.vo.message.SendMsgVo;
-import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ByteArrayResource;
@@ -60,7 +60,7 @@ import java.util.List;
  * @since 2024-05-17
  */
 @Service
-@Logger
+@Slf4j
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {
 
     @Resource
@@ -111,12 +111,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         } else {
             message.setIsShowTime(DateUtil.between(new Date(), previousMessage.getUpdateTime(), DateUnit.MINUTE) > 5);
         }
-        //设置内容
-        FriendDetailsDto friendDetails = friendService.getFriendDetails(toUserId, userId);
-        msgContent.setFormUserId(userId);
-        msgContent.setFormUserName(StringUtils.isNotBlank(friendDetails.getRemark())
-                ? friendDetails.getRemark() : friendDetails.getName());
-        msgContent.setFormUserPortrait(friendDetails.getPortrait());
         if (MessageContentType.Img.equals(msgContent.getType()) ||
                 MessageContentType.File.equals(msgContent.getType()) ||
                 MessageContentType.Voice.equals(msgContent.getType())) {
@@ -144,8 +138,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             throw new LinyuException("双方非好友");
         }
         Message message = sendMessage(userId, sendMsgVo.getToUserId(), sendMsgVo.getMsgContent(), MsgSource.User, type);
+        MsgContent msgContent = message.getMsgContent();
+        FriendDetailsDto friendDetails = friendService.getFriendDetails(sendMsgVo.getToUserId(), userId);
+        msgContent.setFormUserId(userId);
+        msgContent.setFormUserName(StringUtils.isNotBlank(friendDetails.getRemark())
+                ? friendDetails.getRemark() : friendDetails.getName());
+        msgContent.setFormUserPortrait(friendDetails.getPortrait());
         //更新聊天列表
-        chatListService.updateChatList(message.getToId(), userId, message.getMsgContent(), MsgSource.User);
+        chatListService.updateChatList(message.getToId(), userId, msgContent, MsgSource.User);
         if (null != message) {
             try {
                 mqProducerService.sendMsgToUser(message);
@@ -254,7 +254,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         ChatList userIdchatList = chatListService.getChatListByUserIdAndFromId(userId, message.getToId());
         userIdchatList.setLastMsgContent(msgContent);
         chatListService.updateById(userIdchatList);
-        ChatList toIdchatList = null;
+        ChatList toIdchatList;
         if (MsgSource.User.equals(message.getSource())) {
             toIdchatList = chatListService.getChatListByUserIdAndFromId(message.getToId(), userId);
         } else {
@@ -262,8 +262,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         }
         toIdchatList.setLastMsgContent(msgContent);
         chatListService.updateById(toIdchatList);
+        if (message.getSource().equals(MsgSource.User))
+            webSocketService.sendMsgToUser(message, message.getToId());
+        if (message.getSource().equals(MsgSource.Group))
+            webSocketService.sendMsgToGroup(message, retractionMsgVo.getTargetId());
 
-        webSocketService.sendMsgToUser(message, message.getToId());
         return message;
     }
 
@@ -275,10 +278,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public String sendFileOrImg(String userId, String msgId, HttpServletRequest request) throws IOException {
+    public String sendFileOrImg(String userId, String msgId, InputStream inputStream) throws IOException {
         MsgContent msgContent = getFileMsgContent(userId, msgId);
         JSONObject fileInfo = JSONUtil.parseObj(msgContent.getContent());
-        String url = minioUtil.uploadFile(request.getInputStream(), fileInfo.get("fileName").toString(), fileInfo.getLong("size"));
+        String url = minioUtil.uploadFile(inputStream, fileInfo.get("fileName").toString(), fileInfo.getLong("size"));
         return url;
     }
 

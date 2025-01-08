@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cershy.linyuserver.admin.vo.user.*;
 import com.cershy.linyuserver.config.MinioConfig;
+import com.cershy.linyuserver.constant.NotifyType;
 import com.cershy.linyuserver.constant.UserRole;
 import com.cershy.linyuserver.constant.UserStatus;
 import com.cershy.linyuserver.dto.QrCodeResult;
@@ -77,6 +78,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     MinioUtil minioUtil;
+
+    @Resource
+    VerificationCodeService verificationCodeService;
 
     public void updateRedisOnlineNum() {
         Integer onlineNum = webSocketService.getOnlineNum();
@@ -146,6 +150,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         int notifyNum = notifyService.unread(userId);
         unreadInfo.put("chat", msgNum);
         unreadInfo.put("notify", notifyNum);
+        unreadInfo.put("friendNotify", notifyService.unreadByType(userId, NotifyType.Friend_Apply));
+        unreadInfo.put("systemNotify", notifyService.unreadByType(userId, NotifyType.System));
         return unreadInfo;
     }
 
@@ -246,17 +252,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean forget(ForgetVo forgetVo) {
+        User user = getUserByAccount(forgetVo.getAccount());
+        if (null == user) throw new LinyuException("用户不存在~");
         //验证码校验
-        String code = (String) redisUtils.get(forgetVo.getEmail());
+        String code = (String) redisUtils.get(user.getEmail());
         if (code == null || !code.equals(forgetVo.getCode())) {
             throw new LinyuException("验证码错误或者已失效~");
         }
-        redisUtils.del(forgetVo.getEmail());
+        redisUtils.del(user.getEmail());
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getAccount, forgetVo.getAccount())
-                .eq(User::getEmail, forgetVo.getEmail());
-        User user = getOne(queryWrapper);
-        if (null == user) throw new LinyuException("用户不存在~");
+                .eq(User::getEmail, user.getEmail());
 //        User user = new User();
 //        user.setId(IdUtil.randomUUID());
 //        user.setAccount(forgetVo.getAccount());
@@ -466,6 +472,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getUserByAccount(String account) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getAccount, account);
+        return getOne(queryWrapper);
+    }
+
+    @Override
     public JSONObject validateQrCodeLogin(QrCodeLoginVo qrCodeLoginVo, String userid) {
         // 获取用户
         User user = getById(userid);
@@ -482,5 +495,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         qrCodeResult.setExtend(userinfo);
         redisUtils.set(qrCodeLoginVo.getKey(), JSONUtil.toJsonStr(qrCodeResult), 60);
         return ResultUtil.Succeed();
+    }
+
+    @Override
+    public void emailVerifyByAccount(String account) {
+        User user = getUserByAccount(account);
+        if (null == user) {
+            throw new LinyuException("用户不存在~");
+        }
+        if (StringUtils.isEmpty(user.getEmail())) {
+            throw new LinyuException("用户没有对应的邮箱~");
+        }
+        verificationCodeService.emailVerificationCode(user.getEmail());
     }
 }
