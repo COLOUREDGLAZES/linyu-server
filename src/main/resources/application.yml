@@ -71,6 +71,6 @@ minio:
   bucketName: linyu
   fileBucketName: file
   accessKey: root
-#  accessKey: ${MINIO_ACCESS_KEY}
+#  accessKey: minioadmin
   secretKey: Sun55@kong
-#  secretKey: ${MINIO_SECRET_KEY}
+#  secretKey: minioadmin
