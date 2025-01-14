@@ -4,7 +4,7 @@ networks:
     driver: bridge
 services:
   mysql:
-    image: mysql
+    image: mysql:8.0
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -14,7 +14,6 @@ services:
     ports:
       - "3306:3306"
     volumes:
-#      - D:/other/mysql:/var/lib/mysql
       - /linyu/mysql:/var/lib/mysql
     restart: always
 
@@ -86,7 +85,8 @@ services:
     restart: always
 
   linyu:
-    image: linyu:latest
+#    image: linyu:latest
+    image: 66c9efb20cf4
 #    build: ../../Dockerfile
     container_name: linyu
     depends_on:
