@@ -27,16 +27,15 @@ import javax.annotation.PreDestroy;
 @Configuration
 public class NettyWebSocketServer {
 
-    public static final int Web_Socket_Port = 9100;
+//    public static final int Web_Socket_Port = 9100;
+    public static final int Web_Socket_Port = 19100;
     public static final NettyWebSocketServerHandler Netty_Web_Socket_Server_Handler = new NettyWebSocketServerHandler();
-    private EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-    private EventLoopGroup workerGroup = new NioEventLoopGroup(NettyRuntime.availableProcessors());
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup(NettyRuntime.availableProcessors());
 
     /**
      * 启动 ws server
      *
-     * @return
-     * @throws InterruptedException
      */
     @PostConstruct
     public void start() throws InterruptedException {
@@ -65,7 +64,7 @@ public class NettyWebSocketServer {
                 .handler(new LoggingHandler(LogLevel.INFO)) // 为 bossGroup 添加 日志处理器
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                    protected void initChannel(SocketChannel socketChannel) {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new IdleStateHandler(30, 0, 0));
                         pipeline.addLast(new HttpServerCodec());

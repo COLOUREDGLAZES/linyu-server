@@ -411,7 +411,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
                 throw new LinyuException("语音转换错误~");
             }
         } catch (Exception e) {
-            log.error("voiceToText:" + e.getMessage());
+            log.error("voiceToText:{}", e.getMessage());
             throw new LinyuException("语音转换错误~");
         }
     }

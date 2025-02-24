@@ -1,0 +1,112 @@
+version: '3.8'
+networks:
+  rocketmq:
+    driver: bridge
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - /linyu/mysql:/var/lib/mysql
+    restart: always
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+#      - D:/other/redis:/data
+      - /linyu/redis:/data
+    restart: always
+
+  whisper:
+    image: fedirz/faster-whisper-server:latest-cpu
+    container_name: whisper
+    ports:
+      - "8000:8000"
+    volumes:
+#      - D:/other/whisper:/model
+      - /linyu/whisper/model:/model
+    restart: always
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+#      - D:/other/minio/data:/data
+      - /linyu/minio/data:/data
+    command: server /data --console-address ":9001"
+    restart: always
+
+  namesrv:
+    image: apache/rocketmq:5.3.0
+    container_name: rmqnamesrv
+    ports:
+      - "9876:9876"
+    networks:
+      - rocketmq
+    command: sh mqnamesrv
+    environment:
+      - JAVA_OPT_EXT=-server -Xms128m -Xmx128m
+    restart: always
+
+  broker:
+    image: apache/rocketmq:5.3.0
+    container_name: rmqbroker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+      - JAVA_OPT_EXT=-server -Xms128m -Xmx128m
+    depends_on:
+      - namesrv
+    volumes:
+      - ./broker.conf:/home/rocketmq/broker.conf
+#      - /linyu/broker.conf:/home/rocketmq/broker.conf
+    networks:
+      - rocketmq
+    command: sh mqbroker -c /home/rocketmq/broker.conf
+    restart: always
+
+  linyu:
+    image: linyu:latest
+#    image: 35c60c97f0fb
+#    build: ../../Dockerfile
+    container_name: linyu
+    depends_on:
+      - mysql
+      - redis
+      - minio
+      - whisper
+      - namesrv
+      - broker
+    ports:
+      - "9100:9100"
+      - "9200:9200"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      ROCKET_NAME_SERVER: ${ROCKET_NAME_SERVER}
+    restart: always
+
+#    docker run --rm -it -p 1935:1935 -p 1985:1985 -p 8080:8080  --env CANDIDATE=192.168.101.4 -p 8000:8000/udp registry.cn-hangzhou.aliyuncs.com/ossrs/srs:5 ./objs/srs -c conf/rtmp2rtc.conf

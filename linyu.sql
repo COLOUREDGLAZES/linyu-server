@@ -17,7 +17,7 @@ CREATE TABLE `user`
     `is_online`     bit          default 0 COMMENT '是否在线',
     `create_time`   timestamp(3) NOT NULL COMMENT '创建时间',
     `update_time`   timestamp(3) NOT NULL COMMENT '更新时间',
-    `online_equipment`      varchar(20)         default NULL COMMENT '在线设备',
+    `online_equipment` varchar(20)  default NULL COMMENT '在线设备',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表' row_format=dynamic;
 

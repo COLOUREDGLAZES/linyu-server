@@ -25,6 +25,7 @@ import com.cershy.linyuserver.utils.*;
 import com.cershy.linyuserver.vo.login.LoginVo;
 import com.cershy.linyuserver.vo.login.QrCodeLoginVo;
 import com.cershy.linyuserver.vo.user.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Resource
@@ -245,7 +247,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String passwordHash = SecurityUtil.hashPassword(registerVo.getPassword());
         user.setStatus(UserStatus.Normal);
         user.setPassword(passwordHash);
-        user.setBirthday(new Date());
+        user.setBirthday(registerVo.getBirthday() == null ? new Date() : registerVo.getBirthday());
         user.setSex("男");
         user.setEmail(registerVo.getEmail());
         user.setPortrait(minioConfig.getEndpoint() + "/" + minioConfig.getBucketName() + "/default-portrait.jpg");

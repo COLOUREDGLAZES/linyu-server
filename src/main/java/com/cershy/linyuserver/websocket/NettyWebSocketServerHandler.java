@@ -18,7 +18,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     private WebSocketService webSocketService;
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    public void handlerAdded(ChannelHandlerContext ctx) {
         if (this.webSocketService == null) {
             this.webSocketService = SpringUtil.getBean(WebSocketService.class);
         }
@@ -30,7 +30,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void handlerRemoved(ChannelHandlerContext ctx) {
         offLine(ctx);
     }
 
@@ -38,10 +38,9 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
      * 取消绑定
      *
      * @param ctx
-     * @throws Exception
      */
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         offLine(ctx);
     }
 
@@ -69,13 +68,13 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         //异常关闭
         ctx.channel().close();
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         //只发送消息,不接受消息
     }
 }

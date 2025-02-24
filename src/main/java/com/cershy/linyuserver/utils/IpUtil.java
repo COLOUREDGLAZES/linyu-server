@@ -3,7 +3,7 @@ package com.cershy.linyuserver.utils;
 import javax.servlet.http.HttpServletRequest;
 
 public class IpUtil {
-    private static final String LOCAL_IP = "127.0.0.1";
+    private static final String LOCAL_IP = "192.168.101.4";
 
     public static String getIpAddr(HttpServletRequest request) {
         if (request == null) {

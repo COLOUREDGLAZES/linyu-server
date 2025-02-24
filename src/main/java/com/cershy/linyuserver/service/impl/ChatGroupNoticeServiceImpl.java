@@ -79,7 +79,7 @@ public class ChatGroupNoticeServiceImpl extends ServiceImpl<ChatGroupNoticeMappe
         remove(queryWrapper);
         if (deleteNoticeVo.getNoticeId().equals(chatGroup.getNotice().getId())) {
             List<ChatGroupNotice> result = chatGroupNoticeMapper.noticeList(deleteNoticeVo.getGroupId());
-            if (null != result && result.size() >= 0) {
+            if (null != result) {
                 chatGroup.setNotice(result.get(0));
             }
             return chatGroupService.updateById(chatGroup);

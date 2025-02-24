@@ -40,9 +40,11 @@ public class WebSocketService {
     public static final ConcurrentHashMap<Channel, String> Online_Channel = new ConcurrentHashMap<>();
 
     public void online(Channel channel, String token) {
+
         try {
             Claims claims = JwtUtil.parseToken(token);
             String userId = (String) claims.get("userId");
+//            sendNotifyToUser("login=>success",userId);
             Online_User.put(userId, channel);
             Online_Channel.put(channel, userId);
             userService.online(userId);
@@ -70,53 +72,39 @@ public class WebSocketService {
 
     public void sendMsgToUser(Object msg, String userId) {
         Channel channel = Online_User.get(userId);
-        if (channel != null) {
-            sendMsg(channel, msg, WsContentType.Msg);
-        }
+        if (channel != null) sendMsg(channel, msg, WsContentType.Msg);
     }
 
     public void sendMsgToGroup(Message message, String groupId) {
         List<ChatGroupMember> list = chatGroupMemberService.getGroupMember(groupId);
-        for (ChatGroupMember member : list) {
-            if (!message.getFromId().equals(member.getUserId()) || MsgType.System.equals(message.getType())) {
+        for (ChatGroupMember member : list)
+            if (!message.getFromId().equals(member.getUserId()) || MsgType.System.equals(message.getType()))
                 sendMsgToUser(message, member.getUserId());
-            }
-        }
     }
 
     public void sendMsgAll(Object msg) {
-        Online_Channel.forEach((channel, ext) -> {
-            sendMsg(channel, msg, WsContentType.Msg);
-        });
+        Online_Channel.forEach((channel, ext) -> sendMsg(channel, msg, WsContentType.Msg));
     }
 
     public void sendNotifyToUser(Object msg, String userId) {
         Channel channel = Online_User.get(userId);
-        if (channel != null) {
-            sendMsg(channel, msg, WsContentType.Notify);
-        }
+        if (channel != null) sendMsg(channel, msg, WsContentType.Notify);
     }
 
     public void sendNoticeToGroup(Message message, String groupId) {
         List<ChatGroupMember> list = chatGroupMemberService.getGroupMember(groupId);
-        for (ChatGroupMember member : list) {
-            if (!message.getFromId().equals(member.getUserId()) || MsgType.System.equals(message.getType())) {
+        for (ChatGroupMember member : list)
+            if (!message.getFromId().equals(member.getUserId()) || MsgType.System.equals(message.getType()))
                 sendNotifyToUser(message, member.getUserId());
-            }
-        }
     }
 
     public void sendVideoToUser(Object msg, String userId) {
         Channel channel = Online_User.get(userId);
-        if (channel != null) {
-            sendMsg(channel, msg, WsContentType.Video);
-        }
+        if (channel != null) sendMsg(channel, msg, WsContentType.Video);
     }
 
     public void sendNotifyAll(Object msg) {
-        Online_Channel.forEach((channel, ext) -> {
-            sendMsg(channel, msg, WsContentType.Notify);
-        });
+        Online_Channel.forEach((channel, ext) -> sendMsg(channel, msg, WsContentType.Notify));
     }
 
     public Integer getOnlineNum() {

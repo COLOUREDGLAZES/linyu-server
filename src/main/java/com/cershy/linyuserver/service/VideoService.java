@@ -69,9 +69,7 @@ public class VideoService {
 
     public boolean invite(String userId, InviteVo inviteVo) {
         boolean isFriend = friendService.isFriendIgnoreSpecial(userId, inviteVo.getUserId());
-        if (!isFriend) {
-            throw new LinyuException("双方非好友");
-        }
+        if (!isFriend) throw new LinyuException("双方非好友");
         JSONObject msg = new JSONObject();
         msg.set("type", "invite");
         msg.set("fromId", userId);

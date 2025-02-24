@@ -13,7 +13,7 @@ import java.util.Optional;
 public class HttpHeadersHandler extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
             UrlBuilder urlBuilder = UrlBuilder.ofHttp(request.uri());
@@ -31,8 +31,7 @@ public class HttpHeadersHandler extends ChannelInboundHandlerAdapter {
             NettyUtil.setAttr(ctx.channel(), NettyUtil.IP, ip);
             ctx.pipeline().remove(this);
             ctx.fireChannelRead(request);
-        } else {
-            ctx.fireChannelRead(msg);
-        }
+        } else ctx.fireChannelRead(msg);
+
     }
 }

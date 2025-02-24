@@ -4,12 +4,15 @@ import cn.hutool.json.JSONObject;
 import com.cershy.linyuserver.annotation.UrlFree;
 import com.cershy.linyuserver.annotation.UserIp;
 import com.cershy.linyuserver.annotation.Userid;
+import com.cershy.linyuserver.entity.User;
 import com.cershy.linyuserver.service.UserService;
+import com.cershy.linyuserver.service.WebSocketService;
 import com.cershy.linyuserver.utils.ResultUtil;
 import com.cershy.linyuserver.utils.SecurityUtil;
 import com.cershy.linyuserver.vo.login.LoginVo;
 import com.cershy.linyuserver.vo.login.QrCodeLoginVo;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +25,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/v1/api/login")
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginController {
-    @Resource
-    UserService userService;
+
+    private final UserService userService;
 
     @UrlFree
     @GetMapping("/public-key")
@@ -37,9 +40,15 @@ public class LoginController {
     @UrlFree
     @PostMapping()
     public Object login(@Valid @RequestBody LoginVo loginVo, @UserIp String userIp) {
-        String decryptedPassword = SecurityUtil.decryptPassword(loginVo.getPassword());
-        loginVo.setPassword(decryptedPassword);
-        JSONObject result = userService.validateLogin(loginVo, userIp, false);
+        JSONObject result;
+        try {
+            String decryptedPassword = SecurityUtil.decryptPassword(loginVo.getPassword());
+            loginVo.setPassword(decryptedPassword);
+            result = userService.validateLogin(loginVo, userIp, false);
+            System.out.println(result);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return result;
     }
 

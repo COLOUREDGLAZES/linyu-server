@@ -57,7 +57,6 @@ public class UserController {
     /**
      * 用户查询
      *
-     * @return
      */
     @PostMapping("/search")
     public JSONObject searchUser(@RequestBody SearchUserVo searchUserVo) {
@@ -68,18 +67,16 @@ public class UserController {
     /**
      * 获取用户每项未读数
      *
-     * @return
      */
     @GetMapping("/unread")
     public JSONObject unreadInfo(@Userid String userId) {
-        HashMap result = userService.unreadInfo(userId);
+        HashMap<String, Integer> result = userService.unreadInfo(userId);
         return ResultUtil.Succeed(result);
     }
 
     /**
      * 邮箱验证码
      *
-     * @return
      */
     @PostMapping("/email/verify")
     @UrlFree
@@ -91,7 +88,6 @@ public class UserController {
     /**
      * 邮箱验证码(通过账号)
      *
-     * @return
      */
     @PostMapping("/email/verify/by/account")
     @UrlFree
@@ -103,7 +99,6 @@ public class UserController {
     /**
      * 用户注册
      *
-     * @return
      */
     @UrlFree
     @PostMapping("/register")
@@ -117,7 +112,6 @@ public class UserController {
     /**
      * 忘记密码
      *
-     * @return
      */
     @UrlFree
     @PostMapping("/forget")
@@ -131,7 +125,6 @@ public class UserController {
     /**
      * 获取当前用户信息
      *
-     * @return
      */
     @GetMapping("/info")
     public JSONObject info(@Userid String userId) {
@@ -142,7 +135,6 @@ public class UserController {
     /**
      * 修改当前用户信息
      *
-     * @return
      */
     @PostMapping("/update")
     public JSONObject update(@Userid String userId, @RequestBody UpdateVo updateVo) {
@@ -153,7 +145,6 @@ public class UserController {
     /**
      * 修改密码
      *
-     * @return
      */
     @PostMapping("/update/password")
     public JSONObject updateUserPassword(@Userid String userId, @RequestBody UpdatePasswordVo updateVo) {
@@ -195,7 +186,6 @@ public class UserController {
     /**
      * 获取文件
      *
-     * @return
      */
     @GetMapping("/get/file")
     public ResponseEntity<InputStreamResource> getFile(@Userid String userId,
@@ -217,7 +207,6 @@ public class UserController {
     /**
      * 获取图片内容
      *
-     * @return
      */
     @GetMapping("/get/img")
     public JSONObject getImg(@Userid String userId,
