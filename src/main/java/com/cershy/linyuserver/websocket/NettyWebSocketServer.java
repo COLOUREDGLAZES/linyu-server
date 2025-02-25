@@ -27,8 +27,8 @@ import javax.annotation.PreDestroy;
 @Configuration
 public class NettyWebSocketServer {
 
-//    public static final int Web_Socket_Port = 9100;
-    public static final int Web_Socket_Port = 19100;
+    public static final int Web_Socket_Port = 9100;
+//    public static final int Web_Socket_Port = 19100;
     public static final NettyWebSocketServerHandler Netty_Web_Socket_Server_Handler = new NettyWebSocketServerHandler();
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup(NettyRuntime.availableProcessors());

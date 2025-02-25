@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -52,7 +51,6 @@ public class MessageController {
     /**
      * 发送消息给用户
      *
-     * @return
      */
     @PostMapping("/send")
     public JSONObject sendMessage(@Userid String userId, @UserRole String role, @RequestBody SendMsgVo sendMsgVo) {
@@ -63,7 +61,6 @@ public class MessageController {
     /**
      * 撤回消息
      *
-     * @return
      */
     @PostMapping("/retraction")
     public JSONObject retractionMsg(@Userid String userId, @RequestBody RetractionMsgVo retractionMsgVo) {
@@ -74,7 +71,6 @@ public class MessageController {
     /**
      * 重新编辑
      *
-     * @return
      */
     @PostMapping("/reedit")
     public JSONObject reeditMsg(@Userid String userId, @RequestBody ReeditMsgVo reeditMsgVo) {
@@ -85,7 +81,6 @@ public class MessageController {
     /**
      * 聊天记录
      *
-     * @return
      */
     @PostMapping("/record")
     public JSONObject messageRecord(@Userid String userId, @RequestBody MessageRecordVo messageRecordVo) {
@@ -96,7 +91,6 @@ public class MessageController {
     /**
      * 聊天记录（降序）
      *
-     * @return
      */
     @PostMapping("/record/desc")
     public JSONObject messageRecordDesc(@Userid String userId, @RequestBody MessageRecordVo messageRecordVo) {
@@ -108,7 +102,6 @@ public class MessageController {
     /**
      * 发送文件
      *
-     * @return
      */
     @PostMapping("/send/file")
     public JSONObject sendFile(HttpServletRequest request,
@@ -122,7 +115,6 @@ public class MessageController {
     /**
      * 发送文件（表单）
      *
-     * @return
      */
     @PostMapping("/send/file/form")
     public JSONObject sendFile(@RequestParam("file") MultipartFile file,
@@ -135,7 +127,6 @@ public class MessageController {
     /**
      * 发送图片
      *
-     * @return
      */
     @PostMapping(value = "/send/Img")
     public JSONObject sendImg(HttpServletRequest request,
@@ -149,11 +140,9 @@ public class MessageController {
     /**
      * 获取文件
      *
-     * @return
      */
     @GetMapping("/get/file")
-    public ResponseEntity<InputStreamResource> getFile(HttpServletResponse response,
-                                                       @Userid String userId,
+    public ResponseEntity<InputStreamResource> getFile(@Userid String userId,
                                                        @RequestHeader("msgId") String msgId) {
         MsgContent msgContent = messageService.getFileMsgContent(userId, msgId);
         JSONObject fileInfo = JSONUtil.parseObj(msgContent.getContent());
@@ -168,7 +157,6 @@ public class MessageController {
     /**
      * 获取媒体
      *
-     * @return
      */
     @GetMapping("/get/media")
     public JSONObject getMedia(@Userid String userId, @RequestParam("msgId") String msgId) {
@@ -186,7 +174,6 @@ public class MessageController {
     /**
      * 语音消息转文字
      *
-     * @return
      */
     @GetMapping("/voice/to/text")
     public JSONObject voiceToText(@Userid String userId, @RequestParam("msgId") String msgId) {
@@ -197,7 +184,6 @@ public class MessageController {
     /**
      * 语音消息转文字
      *
-     * @return
      */
     @GetMapping("/voice/to/text/from")
     public JSONObject voiceToTextFrom(@Userid String userId, @RequestParam("msgId") String msgId,

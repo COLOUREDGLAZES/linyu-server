@@ -53,7 +53,7 @@ voice:
   transitionApi: "http://123.207.210.163:8000/v1/audio/transcriptions"
 
 rocketmq:
-  enabled: false
+  enabled: true
   name-server: 127.0.0.1:9876
   producer:
     group: linyu_group

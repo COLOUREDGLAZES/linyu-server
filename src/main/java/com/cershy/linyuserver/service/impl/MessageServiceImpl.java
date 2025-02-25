@@ -135,32 +135,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
      */
     public Message sendMessage(String userId, String toUserId, MsgContent msgContent, String source, String type) {
         //获取上一条显示时间的消息
-//        Message previousMessage = messageMapper.getPreviousShowTimeMsg(userId, toUserId);
-//        //存入数据库
-//        Message message = new Message();
-//        message.setId(IdUtil.randomUUID());
-//        message.setFromId(userId);
-//        message.setSource(source);
-//        message.setToId(toUserId);
-//        message.setType(type);
-//        if (null == previousMessage) {
-//            message.setIsShowTime(true);
-//        } else {
-//            message.setIsShowTime(DateUtil.between(new Date(), previousMessage.getUpdateTime(), DateUnit.MINUTE) > 5);
-//        }
-//        if (MessageContentType.Img.equals(msgContent.getType()) ||
-//                MessageContentType.File.equals(msgContent.getType()) ||
-//                MessageContentType.Voice.equals(msgContent.getType())) {
-//            JSONObject content = JSONUtil.parseObj(msgContent.getContent());
-//            String name = (String) content.get("name");
-//            String fileType = name.substring(name.lastIndexOf(".") + 1);
-//            String fileName = userId + "/" + toUserId + "/" + IdUtil.randomUUID() + "." + fileType;
-//            content.set("fileName", fileName);
-//            content.set("url", minioUtil.getUrl(fileName));
-//            content.set("type", fileType);
-//            msgContent.setContent(content.toJSONString(0));
-//        }
-//        message.setMsgContent(msgContent);
         Message message = getMessage(userId, msgContent, source, type, toUserId);
         boolean isSave = save(message);
         if (isSave) return message;
@@ -184,44 +158,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         if (isSave) return message;
         return null;
     }
-
-    //    public Message sendMessage(String userId, SendMsgVo sendMsgVo, MsgContent msgContent, String source, String type) {
-//        final String toUserId = sendMsgVo.getToUserId();
-//        //获取上一条显示时间的消息
-//        Message previousMessage = messageMapper.getPreviousShowTimeMsg(userId, toUserId);
-//        //存入数据库
-//        Message message = new Message();
-//        message.setId(IdUtil.randomUUID());
-//        message.setFromId(userId);
-//        message.setSource(source);
-//        message.setToId(toUserId);
-//        message.setType(type);
-//        if (null == previousMessage) {
-//            message.setIsShowTime(true);
-//        } else {
-//            message.setIsShowTime(DateUtil.between(new Date(), previousMessage.getUpdateTime(), DateUnit.MINUTE) > 5);
-//        }
-//        if (MessageContentType.Img.equals(msgContent.getType()) ||
-//                MessageContentType.File.equals(msgContent.getType()) ||
-//                MessageContentType.Voice.equals(msgContent.getType())) {
-//            JSONObject content = JSONUtil.parseObj(msgContent.getContent());
-//            String name = (String) content.get("name");
-//            String fileType = name.substring(name.lastIndexOf(".") + 1);
-//            String fileName = userId + "/" + toUserId + "/" + IdUtil.randomUUID() + "." + fileType;
-//            content.set("fileName", fileName);
-//            content.set("url", minioUtil.getUrl(fileName));
-//            content.set("type", fileType);
-//            msgContent.setContent(content.toJSONString(0));
-//        }
-//        message.setMsgContent(msgContent);
-//        if (null != sendMsgVo.getIsForward() && sendMsgVo.getIsForward())
-//            message.setFromForwardMsgId(sendMsgVo.getFromMsgId());
-//        boolean isSave = save(message);
-//        if (isSave) {
-//            return message;
-//        }
-//        return null;
-//    }
 
     public Message sendMessageToUser(String userId, SendMsgVo sendMsgVo, String type) {
         //验证是否是好友
@@ -275,16 +211,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     @Override
     public List<Message> messageRecord(String userId, MessageRecordVo messageRecordVo) {
-        List<Message> messages = messageMapper.messageRecord(userId, messageRecordVo.getTargetId(),
+        return messageMapper.messageRecord(userId, messageRecordVo.getTargetId(),
                 messageRecordVo.getIndex(), messageRecordVo.getNum());
-        return messages;
     }
 
     @Override
     public List<Message> messageRecordDesc(String userId, MessageRecordVo messageRecordVo) {
-        List<Message> messages = messageMapper.messageRecordDesc(userId, messageRecordVo.getTargetId(),
+        return messageMapper.messageRecordDesc(userId, messageRecordVo.getTargetId(),
                 messageRecordVo.getIndex(), messageRecordVo.getNum());
-        return messages;
     }
 
     @Override
@@ -374,8 +308,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     public String sendFileOrImg(String userId, String msgId, InputStream inputStream) throws IOException {
         MsgContent msgContent = getFileMsgContent(userId, msgId);
         JSONObject fileInfo = JSONUtil.parseObj(msgContent.getContent());
-        String url = minioUtil.uploadFile(inputStream, fileInfo.get("fileName").toString(), fileInfo.getLong("size"));
-        return url;
+        return minioUtil.uploadFile(inputStream, fileInfo.get("fileName").toString(), fileInfo.getLong("size"));
     }
 
     private Message getVoiceMessage(Message message) {
@@ -426,41 +359,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             throw new LinyuException("不能查看其他~");
         }
         return getVoiceMessage(message);
-//        JSONObject voice = JSONUtil.parseObj(message.getMsgContent().getContent());
-//        if (voice.containsKey("text")) {
-//            return message;
-//        }
-//        //获取语音的路径
-//        String fileName = voice.get("fileName").toString();
-//        try {
-//            // 从 MinIO 获取文件
-//            InputStream inputStream = minioUtil.getObject(fileName);
-//            byte[] content = IOUtils.toByteArray(inputStream);
-//            ByteArrayResource fileResource = FileUtil.createByteArrayResource(content, fileName);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//            body.add("file", fileResource);
-//            body.add("model", voiceConfig.getModel());
-//
-//            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-//            ResponseEntity<String> response = restTemplate.postForEntity(voiceConfig.getTransitionApi(), requestEntity, String.class);
-//
-//            JSONObject result = JSONUtil.parseObj(response.getBody());
-//            if (result.containsKey("text")) {
-//                String text = result.get("text").toString();
-//                voice.set("text", text);
-//                message.getMsgContent().setContent(voice.toJSONString(0));
-//                updateById(message);
-//                return message;
-//            } else {
-//                throw new LinyuException("语音转换错误~");
-//            }
-//        } catch (Exception e) {
-//            log.error("voiceToText:" + e.getMessage());
-//            throw new LinyuException("语音转换错误~");
-//        }
     }
 
     @Override
@@ -477,14 +375,12 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     @Override
     public Integer messageNum(DateTime date) {
-        Integer num = messageMapper.messageNum(date);
-        return num;
+        return messageMapper.messageNum(date);
     }
 
     @Override
     public List<Top10MsgDto> getTop10Msg(Date date) {
-        List<Top10MsgDto> result = messageMapper.getTop10Msg(date);
-        return result;
+        return messageMapper.getTop10Msg(date);
     }
 
     @Override
