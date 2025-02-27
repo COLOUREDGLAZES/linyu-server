@@ -3,6 +3,7 @@ networks:
   rocketmq:
     driver: bridge
 services:
+
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -78,7 +79,6 @@ services:
       - namesrv
     volumes:
       - ./broker.conf:/home/rocketmq/broker.conf
-#      - /linyu/broker.conf:/home/rocketmq/broker.conf
     networks:
       - rocketmq
     command: sh mqbroker -c /home/rocketmq/broker.conf
@@ -86,7 +86,6 @@ services:
 
   linyu:
     image: linyu:latest
-#    image: 35c60c97f0fb
 #    build: ../../Dockerfile
     container_name: linyu
     depends_on:

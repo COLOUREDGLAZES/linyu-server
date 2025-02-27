@@ -23,6 +23,8 @@ public class VerificationCodeService {
     public void emailVerificationCode(String email) {
         String code = (String) redisUtils.get(email);
         if (code != null) {
+            log.info("验证码已发送至邮箱，请注意查收");
+            redisUtils.del(email);
             return;
         }
         Context context = new Context();

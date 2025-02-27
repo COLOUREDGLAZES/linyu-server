@@ -33,6 +33,7 @@ import com.cershy.linyuserver.vo.message.SendMsgVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -148,7 +149,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
      * @author colouredglaze
      * @date 2024/12/20 23:25
      */
-    public Message sendMessage(String userId, SendMsgVo sendMsgVo,MsgContent msgContent ,String source, String type) {
+    public Message sendMessage(String userId, SendMsgVo sendMsgVo, MsgContent msgContent, String source, String type) {
         final String toUserId = sendMsgVo.getToUserId();
         //获取上一条显示时间的消息
         Message message = getMessage(userId, msgContent, source, type, toUserId);
@@ -159,11 +160,22 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return null;
     }
 
+    private static void logInfo(String messageType,Message message, SendResult sendResult) {
+        if (null != sendResult)
+            log.info("send message to {} success, messageId:{},from userId:{}, toId:{},sendResult:{}",
+                    messageType,message.getId(), message.getFromId(), message.getToId(), sendResult);
+        else {
+            log.error("send message to {} fail", messageType);
+            throw new LinyuException("发送消息失败");
+        }
+
+    }
+
     public Message sendMessageToUser(String userId, SendMsgVo sendMsgVo, String type) {
         //验证是否是好友
         boolean isFriend = friendService.isFriendIgnoreSpecial(userId, sendMsgVo.getToUserId());
         if (!isFriend) throw new LinyuException("双方非好友");
-        Message message = sendMessage(userId, sendMsgVo,sendMsgVo.getMsgContent(), MsgSource.User, type);
+        Message message = sendMessage(userId, sendMsgVo, sendMsgVo.getMsgContent(), MsgSource.User, type);
         MsgContent msgContent = message.getMsgContent();
         FriendDetailsDto friendDetails = friendService.getFriendDetails(sendMsgVo.getToUserId(), userId);
         msgContent.setFormUserId(userId);
@@ -173,7 +185,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         //更新聊天列表
         chatListService.updateChatList(message.getToId(), userId, msgContent, MsgSource.User);
         try {
-            mqProducerService.sendMsgToUser(message);
+            SendResult sendResult = mqProducerService.sendMsgToUser(message);
+            logInfo("user",message, sendResult);
         } catch (Exception e) {
             //发送消息
             webSocketService.sendMsgToUser(message, message.getToId());
@@ -192,7 +205,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         //更新聊天列表
         chatListService.updateChatListGroup(message.getToId(), message.getMsgContent());
         try {
-            mqProducerService.sendMsgToGroup(message);
+            SendResult sendResult =mqProducerService.sendMsgToGroup(message);
+            logInfo("group",message, sendResult);
         } catch (Exception e) {
             //发送消息
             webSocketService.sendMsgToGroup(message, message.getToId());
@@ -362,12 +376,12 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public Message voiceToText(String userId, String msgId,Boolean isChatGroupMessage) {
+    public Message voiceToText(String userId, String msgId, Boolean isChatGroupMessage) {
         Message message = getById(msgId);
         if (null == message || !MessageContentType.Voice.equals(message.getMsgContent().getType())) {
             throw new LinyuException("这不是一条语音~");
         }
-        if (!message.getToId().equals(userId) && !message.getFromId().equals(userId)&&!isChatGroupMessage) {
+        if (!message.getToId().equals(userId) && !message.getFromId().equals(userId) && !isChatGroupMessage) {
             throw new LinyuException("不能查看其他~");
         }
         return getVoiceMessage(message);
