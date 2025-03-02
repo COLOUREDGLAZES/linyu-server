@@ -31,6 +31,13 @@ public class User implements Serializable {
     @TableId("id")
     private String id;
 
+    @TableField("third_party_id")
+    private String thirdPartyId;
+
+    @TableField("third_party_type")
+    private String thirdPartyType;
+
+
     /**
      * 用户账号
      */

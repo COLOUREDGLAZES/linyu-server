@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -513,4 +514,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         verificationCodeService.emailVerificationCode(user.getEmail());
     }
+
+
+
 }

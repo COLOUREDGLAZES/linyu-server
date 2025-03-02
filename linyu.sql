@@ -1,25 +1,26 @@
 DROP TABLE if EXISTS `user`;
-CREATE TABLE `user`
-(
-    `id`            varchar(64)  NOT NULL,
-    `account`       varchar(64)  NOT NULL COMMENT '用户账号',
-    `name`          varchar(200) NOT NULL COMMENT '用户名',
-    `portrait`      text         default NULL COMMENT '头像',
-    `password`      varchar(200) NOT NULL COMMENT '密码',
-    `sex`           varchar(64)  default NULL COMMENT '性别',
-    `birthday`      timestamp(3) default NULL COMMENT '生日',
-    `signature`     text         default NULL COMMENT '签名',
-    `phone`         varchar(64)  default NULL COMMENT '手机号',
-    `email`         varchar(200) default NULL COMMENT '邮箱',
-    `last_opt_time` timestamp(3) default NULL COMMENT '最后操作时间',
-    `role`          varchar(64)  default NULL COMMENT '用户角色',
-    `status`        varchar(500) COMMENT '用户状态',
-    `is_online`     bit          default 0 COMMENT '是否在线',
-    `create_time`   timestamp(3) NOT NULL COMMENT '创建时间',
-    `update_time`   timestamp(3) NOT NULL COMMENT '更新时间',
-    `online_equipment` varchar(20)  default NULL COMMENT '在线设备',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表' row_format=dynamic;
+CREATE TABLE `user` (
+                        `id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                        `account` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户账号',
+                        `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
+                        `portrait` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '头像',
+                        `password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
+                        `sex` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '性别',
+                        `birthday` timestamp(3) NULL DEFAULT NULL COMMENT '生日',
+                        `signature` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '签名',
+                        `phone` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '手机号',
+                        `email` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '邮箱',
+                        `last_opt_time` timestamp(3) NULL DEFAULT NULL COMMENT '最后操作时间',
+                        `role` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户角色',
+                        `status` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户状态',
+                        `is_online` bit(1) DEFAULT b'0' COMMENT '是否在线',
+                        `create_time` timestamp(3) NOT NULL COMMENT '创建时间',
+                        `update_time` timestamp(3) NOT NULL COMMENT '更新时间',
+                        `online_equipment` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '在线设备',
+                        `third_party_id` varchar(100) DEFAULT NULL COMMENT '第三方平台用户ID',
+                        `third_party_type` varchar(50) DEFAULT NULL COMMENT 'github',
+                        PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='用户表';
 
 
 DROP TABLE if EXISTS `message`;

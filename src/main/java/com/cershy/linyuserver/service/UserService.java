@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -78,4 +79,5 @@ public interface UserService extends IService<User> {
     JSONObject validateQrCodeLogin(QrCodeLoginVo qrCodeLoginVo, String userid);
 
     void emailVerifyByAccount(String account);
+
 }

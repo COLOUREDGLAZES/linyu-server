@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @Service
-@RocketMQMessageListener(topic = "linyu", selectorExpression = "group", consumerGroup = "linyu_group")
+@RocketMQMessageListener(topic = "kites", selectorExpression = "group", consumerGroup = "kites_group")
 public class GroupMessageConsumer implements RocketMQListener<Message> {
 
     @Resource
