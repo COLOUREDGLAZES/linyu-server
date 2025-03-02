@@ -6,7 +6,7 @@ import com.cershy.linyuserver.annotation.UserIp;
 import com.cershy.linyuserver.config.OAuth2Config.OAuth2Properties;
 import com.cershy.linyuserver.service.CacheService;
 import com.cershy.linyuserver.service.OAuth2Service;
-import com.cershy.linyuserver.utils.ResultUtil;;
+import com.cershy.linyuserver.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

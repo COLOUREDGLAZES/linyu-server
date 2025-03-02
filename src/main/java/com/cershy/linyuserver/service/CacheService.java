@@ -1,5 +1,6 @@
 package com.cershy.linyuserver.service;
 
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -29,16 +30,13 @@ public class CacheService {
     }
 
     private static class CacheEntry {
+        @Getter
         private final String value;
         private final long expiryTime;
 
         public CacheEntry(String value, long expiryTime) {
             this.value = value;
             this.expiryTime = expiryTime;
-        }
-
-        public String getValue() {
-            return value;
         }
 
         public boolean isExpired() {

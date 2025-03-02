@@ -30,17 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -142,8 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public List<UserDto> searchUser(SearchUserVo searchUserVo) {
-        List<UserDto> users = userMapper.findUserByInfo(searchUserVo.getUserInfo());
-        return users;
+        return userMapper.findUserByInfo(searchUserVo.getUserInfo());
     }
 
     @Override
@@ -162,8 +157,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserDto info(String userId) {
-        UserDto user = userMapper.info(userId);
-        return user;
+        return userMapper.info(userId);
     }
 
     @Override
