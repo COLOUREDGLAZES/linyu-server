@@ -111,4 +111,10 @@ public class TalkServiceImpl extends ServiceImpl<TalkMapper, Talk> implements Ta
         Talk talk = talkMapper.getLatestTalkContent(userId, friendId);
         return Optional.ofNullable(talk).map(t -> t.getContent()).orElse(null);
     }
+
+    @Override
+    public TalkContentDto getLatestSelfTalkContent(String userId) {
+        Talk talk = talkMapper.getLatestSelfTalkContent(userId);
+        return Optional.ofNullable(talk).map(t -> t.getContent()).orElse(null);
+    }
 }

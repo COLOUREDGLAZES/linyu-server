@@ -32,4 +32,6 @@ public interface TalkService extends IService<Talk> {
     TalkListDto detailsTalk(String userId, DetailsTalkVo detailsTalkVo);
 
     TalkContentDto getFriendLatestTalkContent(String userId, String friendId);
+
+    TalkContentDto getLatestSelfTalkContent(String userId);
 }

@@ -98,4 +98,17 @@ public interface TalkMapper extends BaseMapper<Talk> {
             "LIMIT 1 ")
     @ResultMap("mybatis-plus_Talk")
     Talk getLatestTalkContent(String userId, String friendId);
+
+    @Select("SELECT  t.* " +
+            "FROM  " +
+            "    talk AS t " +
+            "LEFT JOIN  " +
+            "    talk_permission AS tp ON t.id = tp.talk_id " +
+            "WHERE  " +
+            "    t.user_id =  #{userId} " +
+            "ORDER BY  " +
+            "    t.create_time DESC " +
+            "LIMIT 1 ")
+    @ResultMap("mybatis-plus_Talk")
+    Talk getLatestSelfTalkContent(String userId);
 }

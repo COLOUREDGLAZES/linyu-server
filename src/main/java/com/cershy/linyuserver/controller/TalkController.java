@@ -4,6 +4,7 @@ package com.cershy.linyuserver.controller;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONObject;
 import com.cershy.linyuserver.annotation.Userid;
+import com.cershy.linyuserver.dto.TalkContentDto;
 import com.cershy.linyuserver.dto.TalkListDto;
 import com.cershy.linyuserver.entity.Talk;
 import com.cershy.linyuserver.service.TalkService;
@@ -48,6 +49,12 @@ public class TalkController {
     @PostMapping("/details")
     public JSONObject detailsTalk(@Userid String userId, @RequestBody DetailsTalkVo detailsTalkVo) {
         TalkListDto result = talkService.detailsTalk(userId, detailsTalkVo);
+        return ResultUtil.Succeed(result);
+    }
+
+    @PostMapping("latest/self/details")
+    public JSONObject getTalkByUser(@Userid String userId) {
+        TalkContentDto result = talkService.getLatestSelfTalkContent(userId);
         return ResultUtil.Succeed(result);
     }
 
