@@ -15,4 +15,5 @@ public class UserDto {
     private String signature;
     private String phone;
     private String email;
+    private String talkBackground;
 }

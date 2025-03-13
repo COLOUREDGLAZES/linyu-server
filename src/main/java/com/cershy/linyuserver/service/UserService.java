@@ -33,6 +33,8 @@ public interface UserService extends IService<User> {
 
     boolean updateUserInfo(String userId, UpdateVo updateVo);
 
+    UserDto updateUserInfo(String userId, UpdateTalkBackgroundVo updateVo);
+
     boolean updateUserInfo(String userId, UpdatePasswordVo updateVo);
 
     boolean updateUserPortrait(String userId, String portrait);

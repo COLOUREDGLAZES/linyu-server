@@ -103,15 +103,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper();
         queryWrapper.eq(User::getAccount, loginVo.getAccount());
         User user = getOne(queryWrapper);
-        if (null == user) {
+        if (null == user)
             return ResultUtil.Fail("用户名或密码错误~");
-        }
-        if (!SecurityUtil.verifyPassword(loginVo.getPassword(), user.getPassword())) {
+
+        if (!SecurityUtil.verifyPassword(loginVo.getPassword(), user.getPassword()))
             return ResultUtil.Fail("用户名或密码错误~");
-        }
-        if (isAdmin && !UserRole.Admin.equals(user.getRole())) {
+
+        if (isAdmin && !UserRole.Admin.equals(user.getRole()))
             return ResultUtil.Fail("您非管理员~");
-        }
+
         JSONObject userinfo = createUserToken(user, userIp);
         user.setOnlineEquipment(loginVo.getOnlineEquipment());
         boolean isSave = updateById(user);
@@ -128,6 +128,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userinfo.put("portrait", user.getPortrait());
         userinfo.put("phone", user.getPhone());
         userinfo.put("email", user.getEmail());
+        userinfo.put("talkBackground", user.getTalkBackground());
         //生成用户token
         userinfo.put("token", JwtUtil.createToken(userinfo));
         ThreadUtil.execAsync(() -> {
@@ -175,6 +176,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .set(User::getSignature, updateVo.getSignature())
                 .eq(User::getId, userId);
         return update(updateWrapper);
+    }
+
+    @Override
+    public UserDto updateUserInfo(String userId, UpdateTalkBackgroundVo updateVo) {
+        User user = getById(userId);
+        user.setTalkBackground(updateVo.getTalkBackground());
+        Boolean isSave = updateById(user);
+        final UserDto userDto;
+        if (isSave)
+            userDto = userMapper.info(userId);
+        else
+            userDto = null;
+        return userDto;
     }
 
     @Override

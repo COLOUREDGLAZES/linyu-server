@@ -128,4 +128,10 @@ public class User implements Serializable {
     @TableField("online_equipment")
     private String onlineEquipment;
 
+    /**
+     * 说说背景图片
+     */
+    @TableField("talk_background")
+    private String talkBackground;
+
 }

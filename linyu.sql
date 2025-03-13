@@ -18,6 +18,7 @@ CREATE TABLE `user`
     `create_time`   timestamp(3) NOT NULL COMMENT '创建时间',
     `update_time`   timestamp(3) NOT NULL COMMENT '更新时间',
     `online_equipment` varchar(20)  default NULL COMMENT '在线设备',
+    `talk_background` varchar(255)  default NULL COMMENT '说说背景图片',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表' row_format=dynamic;
 

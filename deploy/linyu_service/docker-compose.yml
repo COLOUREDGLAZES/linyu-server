@@ -85,9 +85,11 @@ services:
     restart: always
 
   linyu:
-    image: linyu:latest
-#    build: ../../Dockerfile
-    container_name: linyu
+    image: linyu-server:latest
+#    build:
+#      context: .
+#      dockerfile: ../../Dockerfile
+    container_name: linyu-server
     depends_on:
       - mysql
       - redis

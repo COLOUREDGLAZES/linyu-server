@@ -143,6 +143,25 @@ public class UserController {
     }
 
     /**
+     * 修改当前用户信息
+     *
+     */
+    @PostMapping("/update/talk/background")
+    public JSONObject updateTalkBackground(@Userid String userId,
+                                           @RequestParam("name") String name,
+                                           @RequestParam("type") String type,
+                                           @RequestParam("size") long size,
+                                           @RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = userId + "-talk-background" + name.substring(name.lastIndexOf("."));
+        String url = minioUtil.upload(file.getInputStream(), fileName, type, size);
+        url += "?t=" + System.currentTimeMillis();
+        UpdateTalkBackgroundVo updateVo = new UpdateTalkBackgroundVo();
+        updateVo.setTalkBackground(url);
+        UserDto result = userService.updateUserInfo(userId, updateVo);
+        return ResultUtil.Succeed(result);
+    }
+
+    /**
      * 修改密码
      *
      */
